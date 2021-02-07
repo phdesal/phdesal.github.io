@@ -1,0 +1,61 @@
+---
+layout: post
+title:  "What Is the Point of Currying"
+date:   2021-02-06 18:38:21 +0100
+author: "Philippe"
+categories: scala
+tags: [scala, functional programming]
+---
+# Currying Explained
+Currying is named after the 20th-century mathematician Haskell Curry. The basic idea is to convert a single function with many arguments into many functions with a single argument each.
+
+Let us take a simple `add` function that takes 2 arguments, `x` and `y` as follows.
+{% highlight scala %}
+def add(x: Int, y: Int): Int = x + y
+{% endhighlight %}
+
+We can call `add` as follows:
+
+{% highlight scala %}
+scala> val sum = add(3, 4)
+sum: Int = 7 
+{% endhighlight %}
+
+Functional programming is all about functions. There are regular _first-order_ functions. There are also _higher-order_ functions. Higher-order functions are:
+- functions that take other functions as arguments, or
+- functions that return other functions.
+
+In order to curry the `add` function, we convert it into a higher-order function that returns another function.
+
+{% highlight scala %}
+def add(x: Int): Int => Int = y => x + y
+{% endhighlight %}
+
+Now, `add` is a function that takes a single argument `x`, and it returns another function that takes a single argument `y`.
+Currying is built into Scala natively, so the same can be written as follows.
+
+{% highlight scala %}
+def add(x: Int)(y: Int): Int => x + y
+{% endhighlight %}
+
+A curried function that has not been passed all its arguments is incomplete and is said to be a partially applied function. If `add` is called with only `x`, it is partially applied.
+
+{% highlight scala %}
+// Partially applied function
+scala> add(3)
+res0: Int => Int = <function>
+{% endhighlight %}
+
+The `<function>` that is returned here still has access to the `x` variable which is `3` in our example. So in essence what is returned here is `y: Int => 3 + y`.
+To complete our example, We can immediately pas another argument `y` to this new function giving us our final result. The syntax goes like this.
+
+{% highlight scala %}
+scala> add(3)(4)
+res0: Int = 7
+{% endhighlight %}
+
+# What is the Point?
+
+When I tried to understand currying, I got stuck on tutorials that explained _what_ currying is, but not _why_ you should use it. So I misunderstood currying as simple syntactic sugar that I would never use in real coding.
+
+The value of this technique lies in the fact that you are creating partially applied functions. These in turn can be passed to other higher-order functions such as the common `map` or `filter` functions.

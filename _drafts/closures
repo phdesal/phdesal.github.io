@@ -1,0 +1,29 @@
+function literal x => x * 2 can be used as an anonymous function.
+or it can be assigned to a val
+
+val double = x => x * 2
+
+here you cannot use named parameters.
+double(5)
+
+
+or it can be made into a method
+
+def double(x: Int) = x * 2
+here you can use named parameters
+double(x = 5)
+
+
+if a method contains a free variable, it is called an open term.
+double does not contain a free variable, so it is a closed term.
+the parameter is called a bound variable.
+
+At runtime, the object that is created from the open term is going to close over the free variable. Therefore it is a closure.
+
+
+var freevariable = 1337
+def openTerm(boundVariable: Int) = freeVariable + boundVariable
+
+def closedTerm(boundVariable: Int) = 1 + boundVariable
+
+
