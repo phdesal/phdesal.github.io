@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "Scala Reduce Cheat Sheet"
+date:   2021-02-25 22:24:12 +0100
+author: "Philippe"
+categories: scala
+tags: [scala, functional programming, cheat sheet]
+---
+# Reduce, Fold ...
+Scala has many built-in higher-order functions to work with Lists.
+The functions `Reduce` and `Fold` have many different variations. What these functions have in common is that they __place an operator in between every element of the list__.
+
+# Associative and Commutative Operations
+The `left` or `right` determines the order in which operations on the list are performed. If the operation is _commutative_, changing the order of the operation does not change the result. If the operation is _associative_, changing the grouping of the elements does not change the result. 
+
+> Commutative and Associative Operation:
+> (2 x 3) x 4 is equivalent to 3 x (2 x 4)
+ 
+> Non-Commutative and Non-Associative Operation:
+> (2 / 3) / 4 is __not__ equivalent to 3 / (2 / 4)
+
+If the operation is commutative and associative, you should preferably use the `left` version.
+
+# Cheat Sheet
+Differences are illustrated using the following list.
+
+(% highlight scala %)
+val xs: List[Double] = List(1.0, 2.0, 3.0, 4.0, 5.0)
+(% endhighlight %)
+
+## reduceLeft
+
+(% highlight scala %)
+scala> xs reduceLeft (_/_)
+res0: Double = 0.0083333333333333
+(% endhighlight %)
+is equivalent to
+(% highlight scala %)
+scala> (((1.0 / 2.0) / 3.0) / 4.0) / 5.0
+res0: Double = 0.0083333333333333
+(% endhighlight %)
