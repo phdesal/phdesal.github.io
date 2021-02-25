@@ -14,14 +14,14 @@ Let us take a simple `add` function that takes 2 arguments, `x` and `y` as follo
 def add(x: Int, y: Int): Int = x + y
 {% endhighlight %}
 
-We can call `add` as follows:
+We can call `add` as you would expect:
 
 {% highlight scala %}
 scala> val sum = add(3, 4)
 sum: Int = 7 
 {% endhighlight %}
 
-Functional programming is all about functions. There are regular _first-order_ functions. There are also _higher-order_ functions. Higher-order functions are:
+To understand currying, remember that functional programming is all about functions. There are regular _first-order_ functions. There are also _higher-order_ functions. Higher-order functions are:
 - functions that take other functions as arguments, or
 - functions that return other functions.
 
@@ -58,4 +58,14 @@ res0: Int = 7
 
 When I tried to understand currying, I got stuck on tutorials that explained _what_ currying is, but not _why_ you should use it. So I misunderstood currying as simple syntactic sugar that I would never use in real coding.
 
-The value of this technique lies in the fact that you are creating partially applied functions. These in turn can be passed to other higher-order functions such as the common `map` or `filter` functions.
+The value of this technique lies in the fact that you can create partially applied functions. These in turn can be passed to other higher-order functions such as the common `map` or `filter` functions.
+
+Suppose we have a long list of numbers, to which we want to add 5. First we create a partially applied function, and then pass it to the `map` function.
+
+{% highlight scala %}
+val myList = List(1,2,3,4,5)
+val add5 = add(5)
+
+scala> myList map add5
+res1: List[Int] = List(6, 7, 8, 9, 10)
+{% endhighlight %}
