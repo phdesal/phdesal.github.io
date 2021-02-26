@@ -8,10 +8,18 @@ tags: [scala, functional programming, cheat sheet]
 ---
 # Reduce, Fold ...
 Scala has many built-in higher-order functions to work with Lists.
-The functions `Reduce` and `Fold` have many different variations. What these functions have in common is that they __place an operator in between every element of the list__.
+The different versions of `Reduce` and `Fold` are variations of the same principle: they __place an operator in between every element of the list__.
+
+(% highlight scala %)
+  List(1,2,3,4,5) reduce (_+_)
+(% endhighlight %)
+is equivalent to 
+(% highlight scala %)
+  1 + 2 + 3 + 4 + 5
+(% endhighlight %)
 
 # Associative and Commutative Operations
-The `left` or `right` determines the order in which operations on the list are performed. If the operation is _commutative_, changing the order of the operation does not change the result. If the operation is _associative_, changing the grouping of the elements does not change the result. 
+The `left` or `right` determines the order in which operations on the list are performed. If the operation is _commutative_, changing the _order_ of the operation does not change the result. If the operation is _associative_, changing the _grouping of the elements_ does not change the result. 
 
 > Commutative and Associative Operation:
 > (2 x 3) x 4 is equivalent to 3 x (2 x 4)
@@ -19,7 +27,24 @@ The `left` or `right` determines the order in which operations on the list are p
 > Non-Commutative and Non-Associative Operation:
 > (2 / 3) / 4 is __not__ equivalent to 3 / (2 / 4)
 
-If the operation is commutative and associative, you should preferably use the `left` version.
+If the operation is commutative and associative, you should preferably use the `left` version, because it is more efficient. In the implementation at the time of writing, the `right` version first reverses the list and then executes the `left` operation.
+
+(% highlight scala %)
+  // Implementation of reduceRight
+  def reduceRight[B >: A](op: (A, B) => B): B = {
+    if (isEmpty)
+      throw new UnsupportedOperationException("empty.reduceRight")
+
+    reversed.reduceLeft[B]((x, y) => op(y, x))
+  }
+(% endhighlight %)
+
+There is also a directionless version. According to the specification, the "order in which operations are performed on elements is unspecified and may be nondeterministic". In reality, the implementation calls the `left` version.
+
+(% highlight scala %)
+  // Implementation of reduce
+  def reduce[A1 >: A](op: (A1, A1) => A1): A1 = reduceLeft(op)
+(% endhighlight %)
 
 # Cheat Sheet
 Differences are illustrated using the following list.
@@ -28,7 +53,7 @@ Differences are illustrated using the following list.
 val xs: List[Double] = List(1.0, 2.0, 3.0, 4.0, 5.0)
 (% endhighlight %)
 
-## reduceLeft
+## reduceLeft (same as reduce)
 
 (% highlight scala %)
 scala> xs reduceLeft (_/_)
@@ -38,4 +63,41 @@ is equivalent to
 (% highlight scala %)
 scala> (((1.0 / 2.0) / 3.0) / 4.0) / 5.0
 res0: Double = 0.0083333333333333
+(% endhighlight %)
+
+## reduceRight
+
+(% highlight scala %)
+scala> xs reduceRight (_/_)
+res0: Double = 1.875
+(% endhighlight %)
+is equivalent to
+(% highlight scala %)
+1.0 / (2.0 / (3.0 / (4.0 / 5.0)))
+res0: Double = 1.875
+(% endhighlight %)
+
+
+## foldLeft (same as fold)
+
+(% highlight scala %)
+scala> (xs foldLeft 6.0) (_ / _)
+res0: Double = 0.05
+(% endhighlight %)
+is equivalent to
+(% highlight scala %)
+scala> ((((6.0 / 1.0) / 2.0) / 3.0) / 4.0) / 5.0
+res0: Double = 0.05
+(% endhighlight %)
+
+## foldRight
+
+(% highlight scala %)
+scala> (xs foldRight 6.0) (_ / _)
+res0: Double = 0.3125
+(% endhighlight %)
+is equivalent to
+(% highlight scala %)
+scala> 1.0 / (2.0 / (3.0 / (4.0 / (5.0 / 6.0))))
+res0: Double = 0.3125
 (% endhighlight %)
